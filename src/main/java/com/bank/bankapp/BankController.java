@@ -1,17 +1,29 @@
 package com.bank.bankapp;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 public class BankController {
 
+    private int balance = 10000;
+
     @GetMapping("/")
-    public String home() {
-        return "Bank App is Running!";
+    public String home(Model model) {
+        model.addAttribute("balance", balance);
+        return "index";
     }
 
-    @GetMapping("/balance")
-    public String balance() {
-        return "Your balance is ₹10,000";
-    }            // trigger CI
+    @PostMapping("/deposit")
+    public String deposit(@RequestParam int amount) {
+        balance += amount;
+        return "redirect:/";
+    }
+
+    @PostMapping("/withdraw")
+    public String withdraw(@RequestParam int amount) {
+        balance -= amount;
+        return "redirect:/";
+    }
 }
