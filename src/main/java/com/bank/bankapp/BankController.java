@@ -13,5 +13,5 @@ public class BankController {
     @GetMapping("/balance")
     public String balance() {
         return "Your balance is ₹10,000";
-    }
+    }            // trigger CI
 }
