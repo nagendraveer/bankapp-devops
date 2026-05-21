@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: bankapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: bankapp
@@ -17,3 +17,9 @@ spec:
         image: nagendra06/bankapp:dacaa1a6d59afb8969adaf79169892dd236157ab
         ports:
         - containerPort: 8081
+        volumeMounts:
+        - name: h2-data
+          mountPath: /data
+      volumes:
+      - name: h2-data
+        emptyDir: {}
