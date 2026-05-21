@@ -12,20 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: bankapp
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       # 1. Checkout code
       - name: Checkout code
@@ -38,13 +24,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 3. Build project (skip tests)
+      # 3. Build project (H2 in-memory, no MySQL needed)
       - name: Build with Maven
         run: mvn clean package -DskipTests
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/bankapp?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-          SPRING_DATASOURCE_USERNAME: root
-          SPRING_DATASOURCE_PASSWORD: root
 
       # 4. Login to DockerHub
       - name: Docker Login
