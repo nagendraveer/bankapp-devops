@@ -116,6 +116,16 @@
         <h2 class="header-title">Bank Dashboard</h2>
         <p class="header-sub">Manage your account securely</p>
     </div>
+    
+
+    <div th:if="${message}" class="alert alert-success text-center">
+    <span th:text="${message}"></span>
+    </div> 
+
+    <div th:if="${error}" class="alert alert-danger text-center">
+    <span th:text="${error}"></span>
+    </div>
+
 
     <!-- Balance Card -->
     <div class="balance-card mb-4">
@@ -150,6 +160,25 @@
         </div>
 
     </div>
+
+
+
+    <!-- Transaction History -->
+<div class="action-card mt-4">
+    <h5 class="text-white mb-3">
+        <i class="bi bi-clock-history me-2"></i>
+        Transaction History
+    </h5>
+
+    <ul class="list-group">
+
+        <li class="list-group-item bg-dark text-white border-secondary"
+            th:each="txn : ${transactions}"
+            th:text="${txn}">
+        </li>
+
+    </ul>
+</div>
 
     <!-- Footer -->
     <div class="text-center mt-4 footer">
