@@ -13,39 +13,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Setup Java
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 3. Build project (H2 in-memory, no MySQL needed)
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
-      # 4. Login to DockerHub
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # 5. Build Docker image
       - name: Build Docker Image
         run: docker build -t nagendra06/bankapp:${{ github.sha }} .
 
-      # 6. Push Docker image
       - name: Push Docker Image
         run: docker push nagendra06/bankapp:${{ github.sha }}
 
-      # 7. Update deployment.yaml with new image
       - name: Update Kubernetes manifest
         run: |
           sed -i "s|image: nagendra06/bankapp:.*|image: nagendra06/bankapp:${{ github.sha }}|" k8s/deployment.yaml
 
-      # 8. Commit & push updated YAML
       - name: Commit changes
         run: |
           git config --global user.name "github-actions"
