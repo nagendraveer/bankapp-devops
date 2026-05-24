@@ -52,3 +52,20 @@ jobs:
           git add k8s/deployment.yaml
           git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
           git push
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull nagendra06/bankapp:${{ github.sha }}
+            docker stop bankapp || true
+            docker rm bankapp || true
+            docker run -d \
+              --name bankapp \
+              --restart always \
+              -p 8081:8081 \
+              -e SPRING_DATA_MONGODB_URI="${{ secrets.MONGODB_URI }}" \
+              nagendra06/bankapp:${{ github.sha }}
