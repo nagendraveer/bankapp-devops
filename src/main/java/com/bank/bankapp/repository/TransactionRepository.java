@@ -1,9 +1,9 @@
 package com.bank.bankapp.repository;
 
 import com.bank.bankapp.entity.Transaction;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findByAccount_IdOrderByCreatedAtDesc(Long accountId);
+public interface TransactionRepository extends MongoRepository<Transaction, String> {
+    List<Transaction> findByAccountIdOrderByCreatedAtDesc(String accountId);
 }

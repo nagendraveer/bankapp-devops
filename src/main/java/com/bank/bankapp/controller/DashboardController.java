@@ -32,6 +32,7 @@ public class DashboardController {
         model.addAttribute("account", account);
         model.addAttribute("user", user);
         model.addAttribute("transactions", transactions.stream().limit(5).toList());
+        model.addAttribute("transactionCount", transactions.size());
         return "dashboard";
     }
 

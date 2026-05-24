@@ -8,7 +8,6 @@ import com.bank.bankapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -21,7 +20,6 @@ public class UserService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
     public void register(RegisterDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail()))
             throw new RuntimeException("Email already registered");
@@ -36,18 +34,14 @@ public class UserService {
         userRepository.save(user);
 
         Account account = new Account();
-        account.setAccountNumber(generateAccountNumber());
-        account.setBalance(new BigDecimal("1000.00")); // welcome bonus
-        account.setUser(user);
+        account.setAccountNumber("ACC" + UUID.randomUUID().toString().replace("-", "").substring(0, 9).toUpperCase());
+        account.setBalance(new BigDecimal("1000.00"));
+        account.setUserId(user.getId());
         accountRepository.save(account);
     }
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    private String generateAccountNumber() {
-        return "ACC" + UUID.randomUUID().toString().replace("-", "").substring(0, 9).toUpperCase();
     }
 }

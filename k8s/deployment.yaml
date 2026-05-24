@@ -14,12 +14,9 @@ spec:
     spec:
       containers:
       - name: bankapp
-        image: nagendra06/bankapp:dacaa1a6d59afb8969adaf79169892dd236157ab
+        image: nagendra06/bankapp:latest
         ports:
         - containerPort: 8081
-        volumeMounts:
-        - name: h2-data
-          mountPath: /data
-      volumes:
-      - name: h2-data
-        emptyDir: {}
+        env:
+        - name: SPRING_DATA_MONGODB_URI
+          value: "mongodb+srv://nagendravernekar06_db_user:Nagendra12345@cluster0.ntvjlbc.mongodb.net/bankapp?retryWrites=true&w=majority&appName=Cluster0"
