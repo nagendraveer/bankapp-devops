@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17.0.13_11-jre-alpine
 RUN apk add --no-cache wget
 WORKDIR /app
 COPY target/bankapp-0.0.1-SNAPSHOT.jar app.jar
