@@ -42,11 +42,12 @@ jobs:
 
       # 2. SonarQube Code Quality Scan
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        continue-on-error: true
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=nagendraveer_bankapp-devops \
+            -Dsonar.organization=nagendraveer \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} || true
 
       # 3. Docker Login
       - name: Docker Login
