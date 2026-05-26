@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: bankapp
-        image: nagendra06/bankapp:31b20987d42680ef1ec6405d0687f06618a7d85b
+        image: nagendra06/bankapp:2c3bb0612c47f9904b87169137b31df3b8d1b72e
         ports:
         - containerPort: 8081
         env:
