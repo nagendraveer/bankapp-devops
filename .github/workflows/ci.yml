@@ -42,7 +42,7 @@ jobs:
 
       # 2. SonarQube Code Quality Scan
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@master
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -83,7 +83,7 @@ jobs:
           git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
           git push
 
-      # 9. Deploy to EC2 via Docker Compose
+      # 9. Deploy to EC2
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
@@ -91,10 +91,13 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/bankapp
-            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
-            echo "GRAFANA_PASSWORD=${{ secrets.GRAFANA_PASSWORD }}" >> .env
-            echo "IMAGE_TAG=${{ github.sha }}" >> .env
-            docker compose pull
-            docker compose up -d --remove-orphans
+            docker pull nagendra06/bankapp:${{ github.sha }}
+            docker stop bankapp || true
+            docker rm bankapp || true
+            docker run -d \
+              --name bankapp \
+              --restart always \
+              -p 8081:8081 \
+              -e SPRING_DATA_MONGODB_URI="${{ secrets.MONGODB_URI }}" \
+              nagendra06/bankapp:${{ github.sha }}
             docker image prune -f
