@@ -80,6 +80,7 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
+          git pull --rebase origin main
           git add k8s/deployment.yaml
           git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
           git push
@@ -87,6 +88,7 @@ jobs:
       # 9. Deploy to EC2
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
+        continue-on-error: true
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
