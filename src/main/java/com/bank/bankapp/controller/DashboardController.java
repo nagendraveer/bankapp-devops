@@ -25,8 +25,11 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        Account account = accountService.getByEmail(userDetails.getUsername());
         User user = userService.findByEmail(userDetails.getUsername());
+        if ("ROLE_ADMIN".equals(user.getRole())) {
+            return "redirect:/admin/dashboard";
+        }
+        Account account = accountService.getByEmail(userDetails.getUsername());
         var transactions = accountService.getTransactions(account.getId());
 
         model.addAttribute("account", account);
